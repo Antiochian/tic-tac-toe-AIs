@@ -16,3 +16,10 @@ At the moment, the AI strategies are:
  |:---:|:---:|
  | ![Greedy](greedy_matchups.png)|![Safe](safe_matchups.png)   |
  |"Greedy" tournament (draws count as a loss)| "Safe" tournament (draws count as a win)|
+
+
+Notes:
+By and large the results are as you'd expect, although with a few interesting features.
+ - Pleasingly the high-risk nature of the aggressive strategy is clear, as the aggressive AI does better against weak opponents than its defensive counterpart, but does significantly worse against the more robust defences of the Flexible and Perfect algorithms. 
+  - The supposedly-"Suicidal" AI actually proved to be rather adroit at accidentally forcing draws, as it always tries to avoid making any game-deciding moves, as shown by its surprisingly (relatively) impressive record against the Defensive and Flexible algorithms
+  - A clear player-one bias can be see by examining the primary diagonal, with every mirrormatch comfortably above the 0-point mark
