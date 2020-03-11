@@ -10,7 +10,9 @@ class Perfect_Player:
     def __init__(self,name):
         self.name = name
         self.inf = 1024
-        
+        self.max_table = {}
+        self.min_table = {}
+    
     def make_move(self,board):
         if board.dim > 4:
             raise Exception("ERROR - ALG ONLY WORKS ON 3x3 GRID")
@@ -32,12 +34,27 @@ class Perfect_Player:
                 raise Exception ("No empty squares found!")
                 return
         return best_choice[1]
-            
+    
+    def hash_board(self,board_state):
+        hashed = 0
+        for i in range(len(board_state)):
+            hashed += board_state[i]*(3**i)
+        return hashed #base10 integer representing board state
+    
+    def unhash_board(self, hashed):
+        board_state = []
+        while hashed:
+            hashed, r = divmod(hashed, 3)
+            board_state.append(r)
+        return board_state
+        
     def minimax(self,board_state,isme,alpha,beta):
         if self.outcome(board_state) != None: #if game is over
             return (self.outcome(board_state),None)
-        
+        hashed_state = self.hash_board(board_state)
         if isme:
+            if hashed_state in self.max_table:
+                return self.max_table[hashed_state]
             best_choice = (-self.inf,None)
             for choice in range(9):
                 if self.shallow_legal_check(board_state,choice): #if space is available
@@ -49,8 +66,11 @@ class Perfect_Player:
                     alpha = max(alpha,best_choice[0])
                     if alpha >= beta:
                         break
+            self.max_table[hashed_state] = best_choice
             return best_choice
         else: #NOT ME
+            if hashed_state in self.min_table:
+                return self.min_table[hashed_state]
             worst_choice = (+self.inf,None)
             for choice in range(9):
                 if self.shallow_legal_check(board_state,choice): #if space is available
@@ -62,6 +82,7 @@ class Perfect_Player:
                     beta = min(beta,worst_choice[0])
                     if alpha >= beta:
                         break
+            self.min_table[hashed_state] = worst_choice
             return worst_choice
             
             
@@ -98,7 +119,3 @@ class Perfect_Player:
             return 0 #DRAW
         else:
             return None #game not ended
-
-#test = Perfect_Player("tester")
-#testboard = [2,0,1,1,0,0,1,2,2]
-#print(test.make_move(testboard))
